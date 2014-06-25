@@ -2,6 +2,7 @@
 // mongo --shell localhost/m102 q5.js
 
 /*
+Example schema given in the question (with some superhero modifications from me).
 {
   _id : …,
   blogdate : ISODate("2008-11-03"),
@@ -19,11 +20,17 @@
 
 q5 = { };
 
+/*
+This script is meant to be run using the "--shell localhost/m102 q5.js" option. This will ensure the script starts
+already connected to the m102 database (if the database isn't created it will be created automatically). Throw
+an error if the script is connected to any other database.
+*/
 if( "m102" != db ) {
     print("The 'db' needs to be 'm102' when the shell starts. Terminating.");
     throw "Use m102 db before running script.";
 }
 
+// Initialize the m102 database with a collection called q5. Fill the q5 collection with sample superhero data.
 q5.init = function() {
     var t = db.q5;
     if( t.count() ) {
@@ -61,7 +68,7 @@ q5.init = function() {
     var j = 100;
     for( var i = 1; i < 1000000; i++ ) {
         if( i % 10000 == 0 ) {
-            print(db.getLastError() + ' ' + i);
+            print('Last error: ' + db.getLastError() + ' ' + i);
         }
         if( ++j >= 500 ) j = 100;
         o.blogdate = new Date(2014, 6, 23, 9, i%60, (i/60)%60, (i/3600)%1000),

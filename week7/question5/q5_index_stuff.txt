@@ -1,0 +1,28 @@
+Answer 1:
+-----------------------------------------------
+# Run the query given in the answer several times to get a benchmark of the millis time.
+db.q5.find( { "comments.flagged" : true } ).explain()
+
+# Now add a basic index to "comments.flagged"
+db.q5.ensureIndex({'comments.flagged':1})
+
+# Run the query given in the answer several more times and compare the millis time.
+# Drop the index and try the query several additional times to triple check the timing.
+db.q5.find( { "comments.flagged" : true } ).explain()
+
+# While adding a multikey index on a boolean is a bit odd it does yield some small performance gains.
+# The explain() indicates the query is still scanning the entire table of sample superhero data, but it
+# is still faster. This answer choice should be selected.
+
+Answer 2:
+-----------------------------------------------
+# Add a unique index per the answer in the question.
+db.q5.ensureIndex( { voters: 1 }, { unique: true } )
+
+# Test the update multiple times to see if it is allowed. It is, so this answer choice should NOT be selected.
+db.q5.update( { '_id': ObjectId("53a8fb66bc070461584cb536") }, { $inc : {'votes':1}, $push : {'voters':'hulk14534'} } );
+
+Answer 3:
+-----------------------------------------------
+# Test the update mulitple times to see if it is allowed. It is not, so this answer should should be selected.
+db.q5.update( { '_id': ObjectId("53a8fb66bc070461584cb538"), 'voters':{$ne:'hulk14536'} }, { $inc : {'votes':1}, $push : {'voters':'hulk14536'} } );
