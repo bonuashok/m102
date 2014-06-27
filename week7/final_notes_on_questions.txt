@@ -1,0 +1,50 @@
+Week7 startup commands for first set of questions:
+mongod --fork --logpath a.log --smallfiles --oplogSize 50 --port 27001 --dbpath /data/z1 --replSet z
+mongod --fork --logpath b.log --smallfiles --oplogSize 50 --port 27002 --dbpath /data/z2 --replSet z
+mongod --fork --logpath c.log --smallfiles --oplogSize 50 --port 27003 --dbpath /data/z3 --replSet z
+
+Week7 - Question 8:
+mongod --fork --logpath cfg.log --smallfiles --oplogSize 50 --dbpath /data/cfg
+mongod --smallfiles --oplogSize 50 --configsvr --dbpath /data/cfg
+# connect to 27019, switch to the config database and run the following
+db.chunks.find().sort({_id:1}).next().lastmodEpoch.getTimestamp().toUTCString().substr(20,6)
+
+Week7 - Question 9:
+# restore the data for each of the two mongo shards
+# from the appropriate s1 directory
+mongorestore --dbpath /data/shd1
+# from the appropriate s2 directory
+mongorestore --dbpath /data/shd2
+# redo the configuration of the shards in db.shards.find()
+db.shards.update({"_id":"s1"},{"host":"Aarons-MacBook-Pro.local:27501"})
+db.shards.update({"_id":"s2"},{"host":"Aarons-MacBook-Pro.local:27601"})
+# restart the shell and the config server mongod
+# start the two shard servers
+mongod --fork --logpath shd1.log --dbpath /data/shd1/ --smallfiles --oplogSize 50 --shardsvr --port 27501
+mongod --fork --logpath shd2.log --dbpath /data/shd2/ --smallfiles --oplogSize 50 --shardsvr --port 27601
+# start a mongos
+mongos --configdb Aarons-MacBook-Pro.local:27019
+# connect to the mongos
+mongo --port 27017
+# run the following command; the answer to this question is the outputted number
+var x = db.elegans.aggregate( [ { $match : { N2 : "T" } } , { $group : { _id:"$N2" , n : { $sum : 1 } } } ] ).next(); print( x.n )
+
+Week7 - Question 10:
+# create an index on the snps connection - {N2:1,mutant:1}
+db.elegans.ensureIndex({N2:1,mutant:1})
+# run the query and evaluate the explain results
+db.elegans.find({N2:"T",mutant:"A"}).limit(5).explain()
+# here's the summary results
+"cursor" : "BtreeCursor N2_1_mutant_1",
+"n" : 10,
+"nChunkSkips" : 0,
+"nYields" : 0,
+"nscanned" : 12,
+"nscannedAllPlans" : 12,
+"nscannedObjects" : 10,
+"nscannedObjectsAllPlans" : 10,
+"millisShardTotal" : 0,
+"millisShardAvg" : 0,
+"numQueries" : 2,
+"numShards" : 2,
+"millis" : 0
