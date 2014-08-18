@@ -1,0 +1,5 @@
+M102 - Week5 replica set startup commands:
+mongod --dbpath /data/1/ --port 27001 --replSet m102week4 --smallfiles --oplogSize 50
+mongod --dbpath /data/2/ --port 27002 --replSet m102week4 --smallfiles --oplogSize 50
+mongod --dbpath /data/3/ --port 27003 --replSet m102week4 --smallfiles --oplogSize 50
+mongod --dbpath /data/4/ --port 27004 --replSet m102week4 --smallfiles --oplogSize 50

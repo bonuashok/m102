@@ -1,0 +1,6 @@
+M102 - Week6 replica set startup commands:
+1. mongod --dbpath /data/week6_1/ --port 27017 --smallfiles --oplogSize 50
+2a. mongod --dbpath /data/week6_1/ --smallfiles --oplogSize 50 --shardsvr (default port is now 27018)
+2b. mongod --smallfiles --oplogSize 50 --configsvr (default port is now 27019)
+2c. mongos --configdb Aarons-MacBook-Pro.local:27019
+2d. mongod --dbpath /data/week6_2/ --smallfiles --oplogSize 50 --shardsvr --port 27020
